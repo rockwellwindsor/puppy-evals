@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# puppy-evals
 
-## Getting Started
+> **Status: actively building — v0.1.0 in progress**
 
-First, run the development server:
+An evaluation harness for the RAG chatbot at windsordevelopmentstudio.io. Measures three things independently: did the right Pinecone chunks get retrieved (retrieval quality), did the answer use them or hallucinate (grounding), and did Gus or Mitch stay in character (persona consistency). Catches regressions when models, prompts, or retrieval parameters change.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## What this is
+
+The portfolio site at windsordevelopmentstudio.io hosts two dog-persona chatbots — Gus and Mitch — powered by a RAG pipeline (Pinecone + GPT-3.5-turbo). This repo is the evaluation harness that measures how well they perform, and whether changes make them better or worse.
+
+Most RAG systems ship without evaluation infrastructure. This one doesn't.
+
+## Architecture
+
+```
+puppy-evals (this repo)
+    ↓ calls
+POST /api/chat/eval  (windsor_design_studio, API-key gated)
+    ↓ returns
+answer + retrieved_chunks + model + latency + tokens
+    ↓ scored by
+retrieval judge (pure math, recall@k)
+grounding judge  (Claude Haiku, 1-5 score)
+persona judge    (Claude Haiku, 1-5 score)
+    ↓ stored in
+Postgres (Neon) → Next.js dashboard
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Coming soon
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [ ] Golden set (60 Q/A pairs across Gus and Mitch)
+- [ ] Three independent judges (retrieval, grounding, persona)
+- [ ] CLI runner (`npm run evals -- run --label "baseline"`)
+- [ ] Dashboard: list, detail, and comparison views
+- [ ] Three documented experiments with before/after data
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
