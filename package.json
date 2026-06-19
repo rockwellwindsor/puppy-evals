@@ -13,7 +13,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:migrate:test": "drizzle-kit migrate --config=drizzle.test.config.ts",
     "db:reset": "dropdb puppy_evals_test && createdb puppy_evals_test && drizzle-kit migrate --config=drizzle.test.config.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "validate:golden": "tsx src/validateGoldenSets.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
