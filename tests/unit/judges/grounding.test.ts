@@ -67,6 +67,16 @@ describe('scoreGrounding', () => {
     ).rejects.toThrow()
   })
 
+  it('handles a response wrapped in a markdown code fence', async () => {
+    const { default: Anthropic } = await import('@anthropic-ai/sdk')
+    vi.mocked(Anthropic).mockImplementationOnce(mockAnthropicWith(
+      '```json\n' + validJudgeResponse + '\n```'
+    ) as any)
+
+    const result = await scoreGrounding('question', chunks, 'answer')
+    expect(result.score).toBe(5)
+  })
+
   it('throws when the score is outside the 1-5 range', async () => {
     const { default: Anthropic } = await import('@anthropic-ai/sdk')
     vi.mocked(Anthropic).mockImplementationOnce(mockAnthropicWith(

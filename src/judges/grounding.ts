@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
+import { parseJudgeResponse } from './parseJudgeResponse'
 
 const GroundingResultSchema = z.object({
   score: z.number().int().min(1).max(5),
@@ -43,6 +44,6 @@ Respond with JSON only, no other text:
   })
 
   const text = response.content[0].type === 'text' ? response.content[0].text : ''
-  const parsed = JSON.parse(text)
+  const parsed = parseJudgeResponse(text)
   return GroundingResultSchema.parse(parsed)
 }

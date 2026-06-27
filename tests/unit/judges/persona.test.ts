@@ -43,6 +43,16 @@ describe('scorePersona', () => {
     expect(result.reason).toBe('Gus used sophisticated vocabulary and stayed in character throughout.')
   })
 
+  it('handles a response wrapped in a markdown code fence', async () => {
+    const { default: Anthropic } = await import('@anthropic-ai/sdk')
+    vi.mocked(Anthropic).mockImplementationOnce(mockAnthropicWith(
+      '```json\n' + validJudgeResponse + '\n```'
+    ) as any)
+
+    const result = await scorePersona('gus', 'some question', 'some answer')
+    expect(result.score).toBe(4)
+  })
+
   it('throws when the response is missing the score field', async () => {
     const { default: Anthropic } = await import('@anthropic-ai/sdk')
     vi.mocked(Anthropic).mockImplementationOnce(mockAnthropicWith(
