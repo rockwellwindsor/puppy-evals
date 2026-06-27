@@ -19,8 +19,9 @@ async function getResults(runId: string) {
 }
 
 
-export default async function RunDetailPage({ params }: { params: { id: string } }) {
-  const run = await getRun(params.id)
+export default async function RunDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const run = await getRun(id)
   if (!run) notFound()
 
   const results = await getResults(run.id)
