@@ -1,5 +1,27 @@
 import { describe, it, expect } from 'vitest'
-import { classifyDelta, summarizeComparison } from '../../../src/dashboard/compare'
+import { classifyDelta, summarizeComparison, sortRunsForComparison } from '../../../src/dashboard/compare'
+
+describe('sortRunsForComparison', () => {
+  const older = { id: 'a', createdAt: new Date('2026-01-01') }
+  const newer = { id: 'b', createdAt: new Date('2026-06-01') }
+
+  it('puts the older run first regardless of check order', () => {
+    const result = sortRunsForComparison([older, newer], new Set(['b', 'a']))
+    expect(result![0].id).toBe('a')
+    expect(result![1].id).toBe('b')
+  })
+
+  it('returns null when fewer than 2 runs are selected', () => {
+    expect(sortRunsForComparison([older, newer], new Set(['a']))).toBeNull()
+  })
+
+  it('handles null createdAt by treating it as epoch', () => {
+    const nullDate = { id: 'c', createdAt: null }
+    const result = sortRunsForComparison([newer, nullDate], new Set(['b', 'c']))
+    expect(result![0].id).toBe('c')
+    expect(result![1].id).toBe('b')
+  })
+})
 
 describe('classifyDelta', () => {
   it('returns improved when delta is positive', () => {

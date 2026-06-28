@@ -1,5 +1,21 @@
 export type DeltaClassification = 'improved' | 'regressed' | 'unchanged'
 
+export function sortRunsForComparison<RunRecord extends { id: string; createdAt: Date | null }>(
+  runs: RunRecord[],
+  selected: Set<string>
+): [RunRecord, RunRecord] | null {
+  const selectedRuns = runs
+    .filter(run => selected.has(run.id))
+    .sort((a, b) => {
+      const aTime = a.createdAt ? a.createdAt.getTime() : 0
+      const bTime = b.createdAt ? b.createdAt.getTime() : 0
+      return aTime - bTime
+    })
+  if (selectedRuns.length !== 2) return null
+  return [selectedRuns[0], selectedRuns[1]]
+}
+
+
 export function classifyDelta(delta: number): DeltaClassification {
   if (delta > 0) return 'improved'
   if (delta < 0) return 'regressed'
