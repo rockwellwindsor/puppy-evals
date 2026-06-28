@@ -36,7 +36,7 @@ export async function runEvals(opts: {
   for (let i = 0; i < goldenSet.length; i += BATCH_SIZE) {
     const batch = goldenSet.slice(i, i + BATCH_SIZE)
     await Promise.all(batch.map(async (entry) => {
-      const response = await callEvalEndpoint(puppy, entry.question, topK ? { top_k: topK } : {})
+      const response = await callEvalEndpoint(puppy, entry.question, { top_k: topK ?? 5 })
 
       const actualSections = response.retrieved_chunks.map(c => c.section)
 

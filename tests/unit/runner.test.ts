@@ -59,7 +59,7 @@ describe('runEvals', () => {
 
     await runEvals({ puppy: 'gus', label: 'test-run', goldenSet: mockGoldenSet })
 
-    expect(callEvalEndpoint).toHaveBeenCalledWith('gus', mockGoldenSet[0].question, {})
+    expect(callEvalEndpoint).toHaveBeenCalledWith('gus', mockGoldenSet[0].question, { top_k: 5 })
     expect(scoreRetrieval).toHaveBeenCalledWith(
       mockGoldenSet[0].expected_chunk_sections,
       ['Core Technical Expertise']
