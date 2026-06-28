@@ -37,11 +37,14 @@ async function run() {
     ? [goldenFlag as 'gus' | 'mitch']
     : ['gus', 'mitch']
 
+  const topKFlag = getFlag('--top-k')
+  const topK = topKFlag ? parseInt(topKFlag, 10) : undefined
+
   for (const puppy of puppies) {
     const goldenSet = loadGoldenSet(`${puppy}.json`)
-    console.log(`\nRunning ${goldenSet.length} questions for ${puppy}...`)
+    console.log(`\nRunning ${goldenSet.length} questions for ${puppy}${topK ? ` (top_k=${topK})` : ''}...`)
 
-    const summary = await runEvals({ puppy, label, goldenSet })
+    const summary = await runEvals({ puppy, label, goldenSet, topK })
 
     console.log(`\n── ${puppy.toUpperCase()} RESULTS ──`)
     console.log(`  Retrieval : ${(summary.retrieval * 100).toFixed(1)}%`)

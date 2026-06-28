@@ -20,12 +20,14 @@ export async function runEvals(opts: {
   puppy: 'gus' | 'mitch'
   label: string
   goldenSet: GoldenEntry[]
+  topK?: number
 }): Promise<RunSummary> {
-  const { puppy, label, goldenSet } = opts
+  const { puppy, label, goldenSet, topK } = opts
 
   const [run] = await db.insert(evalRuns).values({
     runLabel: label,
     model: 'gpt-3.5-turbo',
+    topK: topK ?? 3,
   }).returning()
 
   const scores = { retrieval: 0, grounding: 0, persona: 0 }
@@ -34,7 +36,7 @@ export async function runEvals(opts: {
   for (let i = 0; i < goldenSet.length; i += BATCH_SIZE) {
     const batch = goldenSet.slice(i, i + BATCH_SIZE)
     await Promise.all(batch.map(async (entry) => {
-      const response = await callEvalEndpoint(puppy, entry.question)
+      const response = await callEvalEndpoint(puppy, entry.question, topK ? { top_k: topK } : {})
 
       const actualSections = response.retrieved_chunks.map(c => c.section)
 

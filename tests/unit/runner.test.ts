@@ -59,13 +59,21 @@ describe('runEvals', () => {
 
     await runEvals({ puppy: 'gus', label: 'test-run', goldenSet: mockGoldenSet })
 
-    expect(callEvalEndpoint).toHaveBeenCalledWith('gus', mockGoldenSet[0].question)
+    expect(callEvalEndpoint).toHaveBeenCalledWith('gus', mockGoldenSet[0].question, {})
     expect(scoreRetrieval).toHaveBeenCalledWith(
       mockGoldenSet[0].expected_chunk_sections,
       ['Core Technical Expertise']
     )
     expect(scoreGrounding).toHaveBeenCalledOnce()
     expect(scorePersona).toHaveBeenCalledWith('gus', mockGoldenSet[0].question, mockChatbotResponse.answer)
+  })
+
+  it('passes topK through to the chatbot client when provided', async () => {
+    const { callEvalEndpoint } = await import('../../src/chatbotClient')
+
+    await runEvals({ puppy: 'gus', label: 'test-run', goldenSet: mockGoldenSet, topK: 5 })
+
+    expect(callEvalEndpoint).toHaveBeenCalledWith('gus', mockGoldenSet[0].question, { top_k: 5 })
   })
 
   it('returns aggregate scores for the run', async () => {
