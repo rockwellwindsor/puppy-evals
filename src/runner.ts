@@ -27,7 +27,7 @@ export async function runEvals(opts: {
   const [run] = await db.insert(evalRuns).values({
     runLabel: label,
     model: 'gpt-3.5-turbo',
-    topK: topK ?? 3,
+    topK: topK ?? 5,
   }).returning()
 
   const scores = { retrieval: 0, grounding: 0, persona: 0 }
