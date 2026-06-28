@@ -2,8 +2,8 @@
 
 An evaluation harness for the RAG chatbot at [windsordevelopmentstudio.io](https://windsordevelopmentstudio.io). Measures retrieval quality, factual grounding, and persona consistency independently — and catches regressions when models, prompts, or retrieval parameters change.
 
-![Dashboard list view](public/screenshots/index.png)
-![Dashboard show view](public/screenshots/show.png)
+![Dashboard list view](public/screenshots/index_view.png)
+![Dashboard show view](public/screenshots/show_view).png)
 ![Detail view with regression expanded trace](public/screenshots/expanded_view_1.png)
 ![Detail view with passing expanded trace](public/screenshots/expanded_view_2.png)
 ![Comparison view](public/screenshots/compare.png)
